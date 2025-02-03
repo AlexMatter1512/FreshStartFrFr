@@ -17,7 +17,7 @@ jobs:
       #     node-version: 20
       #     cache: npm
       - name: Install bun
-        run: apt-get install bun -y
+        run: sudo apt-get install bun -y
 
       # - name: Install dependencies
       #   run: npm install
