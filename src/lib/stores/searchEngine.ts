@@ -1,5 +1,6 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 import { browser } from "$app/environment";
+import { settings } from "$lib/stores/settings";
 
 export const searchEngines = [
     {
@@ -32,14 +33,22 @@ export const searchEngines = [
 export let selectedEngine = writable(searchEngines[0]);
 
 // to persist the selected search engine in local storage
+if (browser) {
+    const selectedEngineValue = get(settings)?.selectedEngine;
+    // console.log(selectedEngineValue);
+    if (selectedEngineValue) {
+        selectedEngine.set(JSON.parse(selectedEngineValue));
+    }
+    selectedEngine.subscribe((value) => {
+        // localStorage.setItem("selectedEngine", JSON.stringify(value));
+        if (get(settings)?.persistSearchEngine) {
 
-// if (browser) {
-//     const selectedEngineValue = localStorage.getItem("selectedEngine");
-//     console.log(selectedEngineValue);
-//     if (selectedEngineValue) {
-//         selectedEngine.set(JSON.parse(selectedEngineValue));
-//     }
-//     selectedEngine.subscribe((value) => {
-//         localStorage.setItem("selectedEngine", JSON.stringify(value));
-//     });
-// }
+            settings.update((settings) => {
+                return {
+                    ...settings,
+                    selectedEngine: JSON.stringify(value),
+                };
+            });
+        }
+    });
+}
