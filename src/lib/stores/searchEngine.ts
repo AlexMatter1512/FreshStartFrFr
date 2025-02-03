@@ -54,9 +54,9 @@ export let selectedEngine = writable(defaultSearchEngines[0]);
 // to persist all search engines in local storage
 if (browser) {
     // if engines are already in local storage, add them to the store with the default search engines
-    const searchEnginesValue = localStorage.getItem(searchEnginesLocalName);
+    const searchEnginesValue = localStorage.getItem(searchEnginesLocalName) || "[]";
     if (searchEnginesValue) {
-        const parsedEngines = JSON.parse(searchEnginesValue);
+        const parsedEngines: SearchEngine[] = JSON.parse(searchEnginesValue);
         const mergedEngines = [...defaultSearchEngines];
         parsedEngines.forEach((engine: SearchEngine) => {
             const existingIndex = mergedEngines.findIndex(e => e.name === engine.name);
