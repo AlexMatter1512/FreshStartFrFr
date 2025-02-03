@@ -12,23 +12,24 @@
     import { ChevronDown, Download, Upload } from "lucide-svelte";
     import { fade, slide } from "svelte/transition";
 
-    let mySettings: Settings = $state($settings);
+    // let mySettings: Settings = $state($settings);
 
     // Subscribe to external changes
-    settings.subscribe((value) => {
-        if (JSON.stringify(value) !== JSON.stringify(mySettings)) {
-            mySettings = value;
-        }
-    });
+    // settings.subscribe((value) => {
+    //     console.log("Settings updated", value);
+    //     if (JSON.stringify(value) !== JSON.stringify(mySettings)) {
+    //         mySettings = value;
+    //     }
+    // });
 
     // Update store when local state changes
-    $effect(() => {
-        if (JSON.stringify($settings) !== JSON.stringify(mySettings)) {
-            settings.set(mySettings);
-        }
-    });
+    // $effect(() => {
+    //     if (JSON.stringify($settings) !== JSON.stringify(mySettings)) {
+    //         settings.set(mySettings);
+    //     }
+    // });
 
-    $inspect(mySettings);
+    // $inspect(mySettings);
 </script>
 
 <Card class="shadow-lg h-full">
@@ -37,7 +38,7 @@
         in:fade={{ delay: 100, duration: 100 }}
         out:fade={{ duration: 100 }}
     >
-        {#if mySettings}
+        {#if $settings}
             <div class="space-y-4 p-6 overflow-y-auto">
                 <h1 class="text-2xl font-bold">Settings</h1>
                 <!-- SEARCH ENGINES -->
@@ -45,13 +46,13 @@
                 <ul class="mt-2 space-y-3 border-b">
                     <li class="flex items-center justify-between pb-2">
                         <span>Remember last selected search engine</span>
-                        <Switch bind:checked={mySettings.persistSearchEngine} />
+                        <Switch bind:checked={$settings.persistSearchEngine} />
                     </li>
-                    {#if mySettings.persistSearchEngine && mySettings.selectedEngine}
+                    {#if $settings.persistSearchEngine && $settings.selectedEngine}
                         <li class="flex items-center justify-between pb-2">
                             <span
                                 >Current last selected: {
-                                    mySettings.selectedEngine.name}</span
+                                    $settings.selectedEngine.name}</span
                             >
                         </li>
                     {/if}    
@@ -78,12 +79,12 @@
                 <ul class="mt-2 space-y-3 border-b">
                     <li class="flex items-center justify-between pb-2">
                         <span>Show clock</span>
-                        <Switch bind:checked={mySettings.showClock} />
+                        <Switch bind:checked={$settings.showClock} />
                     </li>
-                    {#if mySettings.showClock}
+                    {#if $settings.showClock}
                         <li class="flex items-center justify-between pb-2">
                             <span>Show Seconds</span>
-                            <Switch bind:checked={mySettings.showSeconds} />
+                            <Switch bind:checked={$settings.showSeconds} />
                         </li>
                     {/if}
                 </ul>
