@@ -5,19 +5,27 @@
         uploadSettings,
         type Settings,
     } from "$lib/stores/settings";
+    import * as Collapsible from "$lib/components/ui/collapsible/index.js";
+    import { searchEnginesStore } from "$lib/stores/searchEngine";
     import Switch from "$lib/components/ui/switch/switch.svelte";
     import Card from "../ui/card/card.svelte";
-    import { Download, Upload } from "lucide-svelte";
+    import { ChevronDown, Download, Upload } from "lucide-svelte";
     import { fade, slide } from "svelte/transition";
 
     let mySettings: Settings = $state($settings);
 
+    // Subscribe to external changes
     settings.subscribe((value) => {
-        mySettings = value;
+        if (JSON.stringify(value) !== JSON.stringify(mySettings)) {
+            mySettings = value;
+        }
     });
 
+    // Update store when local state changes
     $effect(() => {
-        settings.set(mySettings);
+        if (JSON.stringify($settings) !== JSON.stringify(mySettings)) {
+            settings.set(mySettings);
+        }
     });
 
     $inspect(mySettings);
@@ -30,10 +38,9 @@
         out:fade={{ duration: 100 }}
     >
         {#if mySettings}
-            <div class="space-y-4 p-6">
+            <div class="space-y-4 p-6 overflow-y-auto">
                 <h1 class="text-2xl font-bold">Settings</h1>
-
-                <!-- <div class="border rounded-xl p-4 shadow-sm"> -->
+                <!-- SEARCH ENGINES -->
                 <h2 class="text-lg font-semibold">Search Engines</h2>
                 <ul class="mt-2 space-y-3 border-b">
                     <li class="flex items-center justify-between pb-2">
@@ -43,14 +50,30 @@
                     {#if mySettings.persistSearchEngine && mySettings.selectedEngine}
                         <li class="flex items-center justify-between pb-2">
                             <span
-                                >Current last selected: {JSON.parse(
-                                    mySettings.selectedEngine,
-                                ).name}</span
+                                >Current last selected: {
+                                    mySettings.selectedEngine.name}</span
                             >
                         </li>
-                    {/if}
+                    {/if}    
+                    <!-- enable/disable each engine -->
+                    <Collapsible.Root>
+                        <Collapsible.Trigger class="flex items-center w-full">
+                            <h2 class="text-lg font-semibold">Engines</h2>
+                            <ChevronDown />
+                        </Collapsible.Trigger>
+                        <Collapsible.Content>
+                            <ul class="mt-2 space-y-3 border-b">
+                                {#each $searchEnginesStore as engine}
+                                    <li class="flex items-center justify-between pb-2">
+                                        <span>{engine.name}</span>
+                                        <Switch bind:checked={engine.enabled} />
+                                    </li>
+                                {/each}
+                            </ul>
+                        </Collapsible.Content>
+                    </Collapsible.Root>
                 </ul>
-
+                <!-- CLOCK -->
                 <h2 class="text-lg font-semibold">Clock</h2>
                 <ul class="mt-2 space-y-3 border-b">
                     <li class="flex items-center justify-between pb-2">
@@ -63,7 +86,6 @@
                             <Switch bind:checked={mySettings.showSeconds} />
                         </li>
                     {/if}
-                    <!-- </div> -->
                 </ul>
             </div>
         {/if}

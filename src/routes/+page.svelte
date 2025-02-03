@@ -8,7 +8,7 @@
     import SearchEngines from "$lib/components/alex/searchEngines.svelte";
     import Keybindings from "$lib/components/alex/keybindings.svelte";
     import { keybindings } from "$lib";
-    import { searchEngines, selectedEngine } from "$lib/stores/searchEngine.js";
+    import { searchEnginesStore, selectedEngine } from "$lib/stores/searchEngine.js";
     import {
         downloadSettings,
         settings,
@@ -42,7 +42,7 @@
             if (event.key === "h" || event.key === "l") {
                 event.preventDefault(); // Prevent unwanted scrolling or other effects
 
-                let currentIndex = searchEngines.findIndex(
+                let currentIndex = $searchEnginesStore.findIndex(
                     (engine) => engine.name === $selectedEngine.name,
                 );
                 if (currentIndex === -1) return;
@@ -50,9 +50,9 @@
                 let newIndex =
                     event.key === "h"
                         ? Math.max(0, currentIndex - 1) // Move left (previous item)
-                        : Math.min(searchEngines.length - 1, currentIndex + 1); // Move right (next item)
+                        : Math.min($searchEnginesStore.length - 1, currentIndex + 1); // Move right (next item)
 
-                selectedEngine.set(searchEngines[newIndex]);
+                selectedEngine.set($searchEnginesStore[newIndex]);
             }
         }
     }

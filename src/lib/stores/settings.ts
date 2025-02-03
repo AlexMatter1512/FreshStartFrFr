@@ -1,12 +1,14 @@
 import { browser } from "$app/environment";
-import { writable, type Writable } from "svelte/store";
+import { searchEnginesStore, searchEnginesLocalName, type SearchEngine } from "./searchEngine";
+import { get, writable, type Writable } from "svelte/store";
 
+export const settingsLocalName = "settings";
 export class Settings {
     persistSearchEngine: boolean = false;
-    selectedEngine: string = '';
+    selectedEngine: SearchEngine | undefined = undefined ;
     showClock: boolean = false;
     showSeconds: boolean = false;
-    [key: string]: string | number | boolean | undefined;
+    [key: string]: string | number | boolean | SearchEngine | undefined;
 
     constructor(data?: Partial<Settings>) {
         if (data) {
@@ -18,24 +20,28 @@ export class Settings {
 export const settings: Writable<Settings> = writable(new Settings());
 
 if (browser) {
-    const settingsValue = localStorage.getItem("settings");
+    const settingsValue = localStorage.getItem(settingsLocalName);
     if (settingsValue) {
         const parsedSettings = JSON.parse(settingsValue);
         settings.set(new Settings(parsedSettings));
     }
 
     settings.subscribe((value) => {
-        localStorage.setItem("settings", JSON.stringify(value));
+        localStorage.setItem(settingsLocalName, JSON.stringify(value));
     });
 }
-
 export function downloadSettings() {
-    const settingsValue = localStorage.getItem("settings") || "{}";
-    const blob = new Blob([settingsValue], { type: "application/json" });
+    const settingsValue = localStorage.getItem(settingsLocalName) || "{}";
+    const searchEnginesValue = localStorage.getItem(searchEnginesLocalName) || "[]";
+    const exportData = {
+        settings: JSON.parse(settingsValue),
+        searchEngines: JSON.parse(searchEnginesValue),
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "settings.json";
+    a.download = "browser_home_settings.json";
     a.click();
     URL.revokeObjectURL(url);
 }
@@ -49,10 +55,19 @@ export function uploadSettings() {
         const file = input.files[0];
         const reader = new FileReader();
         reader.onload = async () => {
-            const settingsValue = reader.result as string;
-            settings.set(JSON.parse(settingsValue));
-            // reload the page to apply the new settings
-            location.reload();
+            try {
+                const data = JSON.parse(reader.result as string);
+                if (data.settings) {
+                    settings.set(new Settings(data.settings));
+                }
+                if (data.searchEngines) {
+                    searchEnginesStore.set(data.searchEngines);
+                }
+                // reload the page to apply the new settings
+                location.reload();
+            } catch (error) {
+                console.error('Failed to parse settings file:', error);
+            }
         };
         reader.readAsText(file);
     };

@@ -1,6 +1,9 @@
 <script lang="ts">
     import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
-    import { searchEngines, selectedEngine } from "$lib/stores/searchEngine.js";
+    import {
+        searchEnginesStore,
+        selectedEngine,
+    } from "$lib/stores/searchEngine.js";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
 
@@ -11,9 +14,9 @@
 
     $effect(() =>
         selectedEngine.set(
-            searchEngines.find(
+            $searchEnginesStore.find(
                 (engine) => engine.name === selectedEngineName,
-            ) ?? searchEngines[0],
+            ) ?? $searchEnginesStore[0],
         ),
     );
 
@@ -24,17 +27,23 @@
 
 {#if !hidden}
     <!-- content here -->
-     <div transition:slide={{ duration: 100 }}>
-         <ToggleGroup.Root
-         type="single"
-         bind:value={selectedEngineName}
-         bind:ref
-         tabindex={0}
-         >
-         {#each searchEngines as engine}
-         <ToggleGroup.Item value={engine.name} aria-label={engine.name}>
-             <span class="size-4">{engine.icon}</span>
-            </ToggleGroup.Item>
+    <div transition:slide={{ duration: 100 }}>
+        <ToggleGroup.Root
+            type="single"
+            bind:value={selectedEngineName}
+            bind:ref
+            tabindex={0}
+        >
+            {#each $searchEnginesStore as engine}
+                {#if engine.enabled}
+                    <!-- content here -->
+                    <ToggleGroup.Item
+                        value={engine.name}
+                        aria-label={engine.name}
+                    >
+                        <span class="size-4">{engine.icon}</span>
+                    </ToggleGroup.Item>
+                {/if}
             {/each}
         </ToggleGroup.Root>
     </div>
