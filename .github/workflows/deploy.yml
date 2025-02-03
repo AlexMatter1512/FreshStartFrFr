@@ -17,12 +17,12 @@ jobs:
       #     node-version: 20
       #     cache: npm
       - name: Install bun
-        run: sudo apt-get install bun -y
+        uses: oven-sh/setup-bun@v2
 
       # - name: Install dependencies
       #   run: npm install
       - name: Install dependencies
-        uses: oven-sh/setup-bun@v2
+        run: bun install
 
       # - name: build
       #   env:
