@@ -2,15 +2,18 @@
     import ThemeToggle from "$lib/components/alex/themeToggle.svelte";
     import SearchBar from "$lib/components/alex/searchBar.svelte";
     import Clock from "$lib/components/alex/clock.svelte";
-    import { on } from "svelte/events";
+    import { toggleMode } from "mode-watcher";
     import { onMount } from "svelte";
     import SearchEngines from "$lib/components/alex/searchEngines.svelte";
     import Keybindings from "$lib/components/alex/keybindings.svelte";
     import { keybindings } from "$lib";
     import { searchEngines, selectedEngine } from "$lib/stores/searchEngine.js";
 
-    let search_bar: HTMLInputElement | null = null;
-    let search_engines: HTMLDivElement | null = null;
+    let isUrl = $state(false);
+    // svelte-ignore non_reactive_update
+        let search_bar: HTMLInputElement | null = null;
+    // svelte-ignore non_reactive_update
+        let search_engines: HTMLDivElement | null = null;
 
     let focusSearchBarKeys = keybindings.find((group) => group.focus !== "Search Bar")?.bindings.find((binding) => binding.description === "Focus the search bar")?.keys;
 
@@ -44,9 +47,16 @@
         }
     }
 
+    function HandleKeys_ToggleTheme(event: KeyboardEvent) {
+        if (event.key === "t" && document.activeElement !== search_bar) {
+            toggleMode();
+        }
+    }
+
     onMount(() => {
         document.addEventListener("keydown", HandleKeys_SearchEngineNav);
         document.addEventListener("keydown", HandleKeys_SearchBarFocus);
+        document.addEventListener("keydown", HandleKeys_ToggleTheme);
         search_bar?.focus();
     });
 </script>
@@ -54,10 +64,9 @@
 <ThemeToggle class="fixed top-4 right-4" />
 
 <div class="flex flex-col items-center justify-center h-screen p-4">
-    <!-- <h1 class="text-4xl font-bold">Hello, world!</h1> -->
     <Clock />
-    <SearchBar class="max-w-md m-4" bind:ref={search_bar} />
-    <SearchEngines bind:ref={search_engines} />
+    <SearchBar class="max-w-md m-4" bind:ref={search_bar} bind:isUrl/>
+    <SearchEngines bind:ref={search_engines} bind:hidden={isUrl}/>
 </div>
 
 <Keybindings class="fixed bottom-4 right-4" />

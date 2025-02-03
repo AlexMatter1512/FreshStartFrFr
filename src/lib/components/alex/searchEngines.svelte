@@ -2,25 +2,40 @@
     import * as ToggleGroup from "$lib/components/ui/toggle-group/index.js";
     import { searchEngines, selectedEngine } from "$lib/stores/searchEngine.js";
     import { onMount } from "svelte";
+    import { slide } from "svelte/transition";
 
     let selectedEngineName = $state($selectedEngine.name);
     // svelte-ignore non_reactive_update
     // let ref: HTMLDivElement | null = null;
-    let {
-        ref = $bindable(null),
-    } = $props();
+    let { ref = $bindable(null), hidden = $bindable(false) } = $props();
 
-    $effect(() => selectedEngine.set(searchEngines.find((engine) => engine.name === selectedEngineName) ?? searchEngines[0]));
+    $effect(() =>
+        selectedEngine.set(
+            searchEngines.find(
+                (engine) => engine.name === selectedEngineName,
+            ) ?? searchEngines[0],
+        ),
+    );
 
     selectedEngine.subscribe((engine) => {
         selectedEngineName = engine.name;
     });
 </script>
 
-<ToggleGroup.Root type="single" bind:value={selectedEngineName} bind:ref tabindex={0}>
-    {#each searchEngines as engine}
-        <ToggleGroup.Item value={engine.name} aria-label={engine.name}>
-            <span class="size-4">{engine.icon}</span>
-        </ToggleGroup.Item>
-    {/each}
-</ToggleGroup.Root>
+{#if !hidden}
+    <!-- content here -->
+     <div transition:slide={{ duration: 100 }}>
+         <ToggleGroup.Root
+         type="single"
+         bind:value={selectedEngineName}
+         bind:ref
+         tabindex={0}
+         >
+         {#each searchEngines as engine}
+         <ToggleGroup.Item value={engine.name} aria-label={engine.name}>
+             <span class="size-4">{engine.icon}</span>
+            </ToggleGroup.Item>
+            {/each}
+        </ToggleGroup.Root>
+    </div>
+{/if}

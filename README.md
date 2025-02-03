@@ -7,9 +7,11 @@ Oh, and just so you know, **ChatGPT** wrote this README because, come on, who wr
 This is a simple static homepage built with **SvelteKit**, **TypeScript**, and **TailwindCSS**. The page is clean, minimal, and designed to give you the most important info at a glance. Nothing extra, just what you need.
 
 ## Features
-- **Deep Black Background**: Sleek, modern, and a whole vibe.
-- **Current Time Display**: Always up-to-date, no cap.
-- **Google Search Bar**: Hit up Google straight from the homepage, real easy.
+- **Multi Engine Search Bar**: Search across multiple engines at once.
+- **Vim Motions**: Use Vim motions to navigate the page.
+- **Url search**: The search bar recognizes URLs and opens them directly.
+- **Current Time Display**: Always up-to-date, no cap. With some slick animations.
+- **Dark mode Deep Black Background**: Sleek, modern, and a whole vibe. Oled-friendly.
 
 ## Framework and Tools
 - **SvelteKit**: For building out the frontend with that fast, smooth flow.

@@ -8,6 +8,8 @@
         type WithoutChildrenOrChild,
     } from "bits-ui";
     import { cn } from "$lib/utils.js";
+    import { onMount } from "svelte";
+    import { on } from "svelte/events";
 
     let {
         ref = $bindable(null),
@@ -17,7 +19,15 @@
     }: WithoutChildrenOrChild<SwitchPrimitive.RootProps> = $props();
 
     let checked = $state($mode === "dark");
+    $effect(() => {
+        checked = $mode === "dark";
+    });
 
+    onMount(() => {
+        ref?.addEventListener("focus", () => {
+            ref?.blur();
+        });
+    });
 </script>
 
 <SwitchPrimitive.Root
