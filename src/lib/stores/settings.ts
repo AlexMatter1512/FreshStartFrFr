@@ -6,8 +6,8 @@ export const settingsLocalName = "settings";
 export class Settings {
     persistSearchEngine: boolean = false;
     selectedEngine: SearchEngine | undefined = undefined ;
-    showClock: boolean = false;
-    showSeconds: boolean = false;
+    showClock: boolean = true;
+    showSeconds: boolean = true;
     [key: string]: string | number | boolean | SearchEngine | undefined;
 
     constructor(data?: Partial<Settings>) {
