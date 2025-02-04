@@ -11,6 +11,7 @@
     import Card from "../ui/card/card.svelte";
     import { ChevronDown, Download, Upload } from "lucide-svelte";
     import { fade, slide } from "svelte/transition";
+    import Boolean from "./settings/boolean.svelte";
 
     // let mySettings: Settings = $state($settings);
 
@@ -44,16 +45,20 @@
                 <!-- SEARCH ENGINES -->
                 <h2 class="text-lg font-semibold">Search Engines</h2>
                 <ul class="mt-2 space-y-3 border-b">
-                    <li class="flex items-center justify-between pb-2">
-                        <span>Remember last selected search engine</span>
-                        <Switch bind:checked={$settings.persistSearchEngine} />
-                    </li>
+                    <!-- show engines -->
+                    <Boolean
+                        title="Show search engines icons"
+                        bind:setting={$settings.showEngines}
+                    />
+                    <!-- persist search engine -->
+                     <Boolean
+                        title="Remember last selected search engine"
+                        description="Your last selected search engine will be automatically selected next time"
+                        bind:setting={$settings.persistSearchEngine}
+                    />
                     {#if $settings.persistSearchEngine && $settings.selectedEngine}
                         <li class="flex items-center justify-between pb-2">
-                            <span
-                                >Current last selected: {
-                                    $settings.selectedEngine.name}</span
-                            >
+                            <span>Current last selected: {$settings.selectedEngine.name}</span>
                         </li>
                     {/if}    
                     <!-- enable/disable each engine -->
@@ -65,10 +70,10 @@
                         <Collapsible.Content>
                             <ul class="mt-2 space-y-3 border-b">
                                 {#each $searchEnginesStore as engine}
-                                    <li class="flex items-center justify-between pb-2">
-                                        <span>{engine.name}</span>
-                                        <Switch bind:checked={engine.enabled} />
-                                    </li>
+                                    <Boolean
+                                        title={engine.name}
+                                        bind:setting={engine.enabled}
+                                    />
                                 {/each}
                             </ul>
                         </Collapsible.Content>
@@ -77,15 +82,19 @@
                 <!-- CLOCK -->
                 <h2 class="text-lg font-semibold">Clock</h2>
                 <ul class="mt-2 space-y-3 border-b">
-                    <li class="flex items-center justify-between pb-2">
-                        <span>Show clock</span>
-                        <Switch bind:checked={$settings.showClock} />
-                    </li>
+                    <Boolean
+                        title="Show Clock"
+                        bind:setting={$settings.showClock}
+                    />
                     {#if $settings.showClock}
-                        <li class="flex items-center justify-between pb-2">
-                            <span>Show Seconds</span>
-                            <Switch bind:checked={$settings.showSeconds} />
-                        </li>
+                        <Boolean
+                            title="Show Seconds"
+                            bind:setting={$settings.showSeconds}
+                        />
+                        <Boolean
+                            title="Show Date on Hover"
+                            bind:setting={$settings.showDateOnHover}
+                        />
                     {/if}
                 </ul>
             </div>

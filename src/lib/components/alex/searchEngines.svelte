@@ -4,6 +4,7 @@
         searchEnginesStore,
         selectedEngine,
     } from "$lib/stores/searchEngine.js";
+    import { settings } from "$lib/stores/settings";
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
 
@@ -25,8 +26,11 @@
     });
 </script>
 
+<div class="m-4">
 {#if !hidden}
-    <!-- content here -->
+{#if !$settings.showEngines}
+    {$selectedEngine.name}
+{:else}
     <div transition:slide={{ duration: 100 }}>
         <ToggleGroup.Root
             type="single"
@@ -48,3 +52,5 @@
         </ToggleGroup.Root>
     </div>
 {/if}
+{/if}
+</div>

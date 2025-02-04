@@ -1,13 +1,19 @@
 import { browser } from "$app/environment";
-import { searchEnginesStore, searchEnginesLocalName, type SearchEngine } from "./searchEngine";
+import { searchEnginesStore, searchEnginesLocalName, type SearchEngine } from "$lib/stores/searchEngine";
+import { pinnedStore, pinnedLocalName, type Pinned } from "./pinned";
 import { get, writable, type Writable } from "svelte/store";
 
 export const settingsLocalName = "settings";
 export class Settings {
+    // engines
+    showEngines: boolean = true;
     persistSearchEngine: boolean = false;
     selectedEngine: SearchEngine | undefined = undefined ;
+    // clock
     showClock: boolean = true;
     showSeconds: boolean = true;
+    showDateOnHover: boolean = true;
+    // other
     [key: string]: string | number | boolean | SearchEngine | undefined;
 
     constructor(data?: Partial<Settings>) {
@@ -30,13 +36,18 @@ if (browser) {
         localStorage.setItem(settingsLocalName, JSON.stringify(value));
     });
 }
+
 export function downloadSettings() {
     const settingsValue = localStorage.getItem(settingsLocalName) || "{}";
     const searchEnginesValue = localStorage.getItem(searchEnginesLocalName) || "[]";
+    const pinnedValue = localStorage.getItem(pinnedLocalName) || "[]";
+
     const exportData = {
         settings: JSON.parse(settingsValue),
         searchEngines: JSON.parse(searchEnginesValue),
+        pinned: JSON.parse(pinnedValue),
     };
+
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -62,6 +73,9 @@ export function uploadSettings() {
                 }
                 if (data.searchEngines) {
                     searchEnginesStore.set(data.searchEngines);
+                }
+                if (data.pinned) {
+                    pinnedStore.set(data.pinned);
                 }
                 // reload the page to apply the new settings
                 location.reload();

@@ -8,7 +8,7 @@
     import Card from "../ui/card/card.svelte";
 
     // export let className: string = "";
-    let { class: className } = $props();
+    let { class: className = "" } = $props();
 
     const aliases: { [key: string]: string } = {
         " ": "Space",
@@ -31,7 +31,7 @@
 <div class={cn("relative flex flex-col items-end", className)}>
     {#if show}
     <div transition:fade={{ duration: 100 }}>
-    <Card class="p-4 m-4 max-w-sm w-auto rounded-lg shadow-lg bg-background">
+    <Card class="p-4 m-4 max-w-md min-w-max rounded-lg shadow-lg bg-background absolute bottom-full right-0 z-50">
         <h2 class="text-lg font-semibold">Keybindings</h2>
         {#each keybindings as group (group.focus)}
             <div class="mt-3">
@@ -44,7 +44,7 @@
                             {#each binding.keys as keyComb}
                                 <!-- content here -->
                                 <span
-                                    class="inline-block px-2 py-1 rounded bg-zinc-700 font-mono font-semibold"
+                                    class="inline-block px-2 py-1 rounded bg-secondary font-mono font-semibold"
                                 >
                                     {keyComb
                                         .split(" & ")

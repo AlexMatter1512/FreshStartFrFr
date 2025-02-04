@@ -18,6 +18,8 @@
     import ChevronRight from "lucide-svelte/icons/chevron-right";
     import { Button } from "$lib/components/ui/button/index.js";
     import { ChevronLeft } from "lucide-svelte";
+    import Pinned from "$lib/components/alex/pinned.svelte";
+    import RightSideBar from "$lib/components/rightSideBar.svelte";
 
     let isUrl = $state(false);
     let showSettings = $state(false);
@@ -92,9 +94,10 @@
     });
 </script>
 
-<ThemeToggle class="fixed top-4 right-4" />
+<!-- <ThemeToggle class="fixed top-4 right-4 z-50" /> -->
 
-<div class="flex flex-row">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="flex flex-row" ondragover={(e) => e.preventDefault()}>
     {#if showSettings}
         <div
             in:slide={{ duration: 100, axis: "x" }}
@@ -124,9 +127,16 @@
         {#if $settings.showClock}
             <Clock />
         {/if}
-        <SearchBar class="max-w-md m-4" bind:ref={search_bar} bind:isUrl />
+        <SearchBar class="max-w-md" bind:ref={search_bar} bind:isUrl />
         <SearchEngines bind:ref={search_engines} bind:hidden={isUrl} />
     </div>
+    <!-- <div class="fixed right-0 h-screen">
+        <Pinned/>
+    </div> -->
 </div>
 
-<Keybindings class="fixed bottom-4 right-4" />
+<div class="fixed right-0 top-0 h-screen py-4">
+    <RightSideBar />
+</div>
+
+<!-- <Keybindings class="fixed bottom-4 right-4" /> -->

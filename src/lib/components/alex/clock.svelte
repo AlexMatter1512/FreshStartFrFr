@@ -26,14 +26,13 @@
 >
 	<NumberFlowGroup>
 		<div
-			style="font-variant-numeric: tabular-nums; --number-flow-char-height: 0.85em"
-			class="~text-3xl/4xl flex items-baseline font-semibold"
+			style="font-variant-numeric: tabular-nums; "
+			class="flex items-baseline font-semibold text-6xl"
 		>
 			<NumberFlow
 				trend={1}
 				value={hh}
 				format={{ minimumIntegerDigits: 2 }}
-				class="text-5xl"
 			/>
 			<NumberFlow
 				prefix=":"
@@ -41,7 +40,6 @@
 				value={mm}
 				digits={{ 1: { max: 5 } }}
 				format={{ minimumIntegerDigits: 2 }}
-				class="text-5xl"
 			/>
 			{#if $settings.showSeconds}
 				<NumberFlow
@@ -50,23 +48,26 @@
 					value={ss}
 					digits={{ 1: { max: 5 } }}
 					format={{ minimumIntegerDigits: 2 }}
+					class="text-lg"
 				/>
 			{/if}
 		</div>
 	</NumberFlowGroup>
+	
+	{#if $settings.showDateOnHover}
+		{#if showDate}
+			<div transition:slide={{ duration: 100 }} class="flex items-center justify-center mb-4">
+				<p
+					class="text-sm text-muted-foreground"
+					transition:fade={{ delay: 80, duration: 80 }}
+				>
+					{date.toLocaleDateString('en-GB', {
+						year: "numeric",
+						month: "2-digit",
+						day: "2-digit",
+					})}
+				</p>
+			</div>
+		{/if}
+	{/if}
 </div>
-
-{#if showDate}
-	<div transition:slide={{ duration: 100 }}>
-		<p
-			class="text-sm text-zinc-600"
-			transition:fade={{ delay: 80, duration: 80 }}
-		>
-			{date.toLocaleDateString(undefined, {
-				year: "numeric",
-				month: "2-digit",
-				day: "2-digit",
-			})}
-		</p>
-	</div>
-{/if}
