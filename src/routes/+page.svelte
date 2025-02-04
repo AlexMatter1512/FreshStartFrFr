@@ -26,6 +26,7 @@
     let fixSettingsButton = $state(false);
     // svelte-ignore non_reactive_update
     let search_bar: HTMLInputElement | null = null;
+    let searchBarValue = $state("");
     // svelte-ignore non_reactive_update
     let search_engines: HTMLDivElement | null = null;
 
@@ -127,7 +128,7 @@
         {#if $settings.showClock}
             <Clock />
         {/if}
-        <SearchBar class="max-w-md" bind:ref={search_bar} bind:isUrl />
+        <SearchBar class="max-w-md" bind:ref={search_bar} bind:isUrl bind:value={searchBarValue} />
         <SearchEngines bind:ref={search_engines} bind:hidden={isUrl} />
     </div>
     <!-- <div class="fixed right-0 h-screen">
@@ -135,8 +136,8 @@
     </div> -->
 </div>
 
-<div class="fixed right-0 top-0 h-screen py-4">
-    <RightSideBar />
+<div class="fixed right-0 top-0 h-screen p-4">
+    <RightSideBar bind:searchValue={searchBarValue} />
 </div>
 
 <!-- <Keybindings class="fixed bottom-4 right-4" /> -->
